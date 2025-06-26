@@ -1,0 +1,27 @@
+name: roundcube
+services:
+  roundcube:
+    image: roundcube/roundcubemail:latest
+    container_name: roundcube
+    hostname: ${BASE_HOST_NAME:-$HOSTNAME}
+    restart: always
+    pull_policy: always
+    environment:
+      ROUNDCUBEMAIL_DB_TYPE: sqlite
+      ROUNDCUBEMAIL_SKIN: elastic
+      ROUNDCUBEMAIL_DEFAULT_HOST: tls://${EMAIL_SERVER_DOMAIN:-$BASE_HOST_NAME}
+      ROUNDCUBEMAIL_SMTP_SERVER: tls://smtp.${EMAIL_SERVER_DOMAIN:-$BASE_HOST_NAME}
+      ROUNDCUBEMAIL_COMPOSER_PLUGINS: 'weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2'
+      ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
+    ports:
+      - '172.17.0.1:60789:80'
+    volumes:
+      - './rootfs/db/sqlite:/var/roundcube/db'
+      - './rootfs/data/roundcoube:/var/www/html'
+    networks:
+      - roundcube
+
+networks:
+  roundcube:
+    name: roundcube
+    external: false
