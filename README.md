@@ -45,8 +45,8 @@ See `docker-compose.yaml` for complete list of configurable options.
 
 ## 📂 Volumes
 
-- `./rootfs/data/db/sqlite/roundcube` - Data storage
-- `./rootfs/data/roundcube` - Data storage
+- `./volumes/data/db/sqlite/roundcube` - Data storage
+- `./volumes/data/roundcube` - Data storage
 
 ## 🔍 Logging
 
