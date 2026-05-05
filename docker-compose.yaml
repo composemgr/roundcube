@@ -26,8 +26,8 @@ services:
     ports:
       - '172.17.0.1:60789:80'
     volumes:
-      - './rootfs/data/db/sqlite/roundcube:/var/roundcube/db'
-      - './rootfs/data/roundcube:/var/www/html'
+      - './volumes/data/db/sqlite/roundcube:/var/roundcube/db'
+      - './volumes/data/roundcube:/var/www/html'
     networks:
       - roundcube
 
