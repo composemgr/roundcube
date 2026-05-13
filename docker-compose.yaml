@@ -22,8 +22,8 @@ services:
       ROUNDCUBEMAIL_DEFAULT_HOST: tls://${EMAIL_SERVER_HOST:-mail.example.com}
       ROUNDCUBEMAIL_SMTP_SERVER: tls://${EMAIL_SERVER_HOST:-mail.example.com}
       ROUNDCUBEMAIL_SMTP_PORT: ${EMAIL_SERVER_PORT:-587}
-      ROUNDCUBEMAIL_COMPOSER_PLUGINS: weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2
-      ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
+      ROUNDCUBEMAIL_INSTALL_PLUGINS: "true"
+      ROUNDCUBEMAIL_PLUGINS: thunderbird_labels,show_folder_size,tls_icon
       CONTAINER_NAME: roundcube-app
       HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
     ports:
