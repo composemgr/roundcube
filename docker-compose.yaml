@@ -24,6 +24,8 @@ services:
       ROUNDCUBEMAIL_SMTP_PORT: ${EMAIL_SERVER_PORT:-587}
       ROUNDCUBEMAIL_COMPOSER_PLUGINS: weird-birds/thunderbird_labels,jfcherng-roundcube/show-folder-size,germancoding/tls_icon:^1.2
       ROUNDCUBEMAIL_PLUGINS: thunderbird_labels, show_folder_size, tls_icon
+      CONTAINER_NAME: roundcube-app
+      HOSTNAME: ${BASE_HOST_NAME:-$HOSTNAME}
     ports:
       - '172.17.0.1:60789:80'
     volumes:
@@ -31,8 +33,30 @@ services:
       - './volumes/data/roundcube:/var/www/html'
     networks:
       - roundcube
+      - proxy
+      - cloudflare
+    labels:
+      - 'traefik.enable=true'
+      - 'cloudflare.enable=true'
+      - 'traefik.docker.network=proxy'
+      - 'cloudflare.service=http://roundcube-app:80'
+      - 'cloudflare.hostname=roundcube.${CLOUDFLARE_ZONE_NAME:-}'
+      - 'traefik.http.routers.roundcube-app.entrypoints=http'
+      - 'traefik.http.routers.roundcube-app-secure.tls=true'
+      - 'traefik.http.routers.roundcube-app.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.middlewares.roundcube-app-https-redirect.redirectscheme.scheme=https'
+      - 'traefik.http.routers.roundcube-app.middlewares=roundcube-app-https-redirect'
+      - 'traefik.http.routers.roundcube-app-secure.entrypoints=https'
+      - 'traefik.http.routers.roundcube-app-secure.rule=Host($(${BASE_HOST_NAME:-$HOSTNAME}))'
+      - 'traefik.http.routers.roundcube-app-secure.tls.certresolver=cloudflare'
+      - 'traefik.http.routers.roundcube-app-secure.service=roundcube-app'
+      - 'traefik.http.services.roundcube-app.loadbalancer.server.port=80'
 
 networks:
   roundcube:
     name: roundcube
     external: false
+  proxy:
+    external: true
+  cloudflare:
+    external: true
